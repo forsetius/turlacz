@@ -11,4 +11,9 @@ export default class InitiativeTrackerService implements ServiceInterface {
   {
     throw new Error('Method not implemented.');
   }
+
+  public usage(): string
+  {
+    throw new Error('Method not implemented.');
+  }
 }

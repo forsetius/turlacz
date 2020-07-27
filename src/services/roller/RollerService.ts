@@ -48,7 +48,7 @@ export default class RollerService implements ServiceInterface {
     if (!Array.isArray(parts)
       || parts.length < 1
       || parts.length > 3
-    ) throw new Error();
+    ) throw new InvalidArgumentError(this.usage());
 
     if (parts.length === 1) {
       parts.unshift(DEFAULT_NUMBER_OF_DICE);
@@ -63,6 +63,21 @@ export default class RollerService implements ServiceInterface {
     }
 
     return { label: parts[0], n: Number(parts[1]), dieType: parts[2] };
+  }
+
+  public usage() {
+    return `
+    Użyj składni \`. <etykieta> <n> <typ>\`, gdzie:
+    - ***etykieta*** - opis rzutu (np. "Atak"). Nieobowiązkowy, domyślnie: "Rzut"
+    - ***n*** - ilość kostek. Nieobowiązkowy, domyślnie: 1
+    - ***typ*** - typ kostki. Możliwości:
+        - \`.\` - d20
+        - \`..\` - d100
+        - \`b\` - Blades in the Dark
+        - \`f\` - FATE/FUDGE
+        - \`u\` - Unimechanika
+        - *<liczba>* - kostka d<liczba>
+    `;
   }
 }
 

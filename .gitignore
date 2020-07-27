@@ -1,4 +1,6 @@
 dist/
+logs/*.log
+!logs/.gitkeep
 node_modules/
 .vscode/
 .env

@@ -1,41 +1,24 @@
 import Discord from 'discord.js';
-import { Logger } from 'winston';
+import { final, Logger } from 'pino';
 
 
 export function setErrorHandling(client: Discord.Client, logger: Logger) {
-  const handleError = (err: Error) => {
-    const origin = typeof err.stack === 'undefined'
-    ? 'undefined'
-    : err.stack.slice(
-        err.stack.indexOf('(') + 1,
-        err.stack.indexOf(')')
-      );
-
-    logger.error(err.message, { type: err.name, origin });
-    console.log(err.stack);
-
-    logger.end();
-  };
+  const handleFinalError = (msg: string) => final(logger, (err, finalLogger) => {
+    finalLogger.error(err, msg);
+    process.exit();
+  });
 
   process
-    .on('unhandledRejection', (err: Error) => {
-      handleError(err);
-    })
-    .on('uncaughtException', async (err: Error) => {
-      await handleError(err);
+    .on('unhandledRejection', handleFinalError('unhandledRejection'))
+    .on('uncaughtException', handleFinalError('uncaughtException'))
+    .on('SIGINT', () => {
+      logger.info('Wciśnięto ctrl+c');
+      process.exit();
     })
     .on('exit', () => {
-      console.log('>>>');
-
       client.destroy();
-    })
-    .on('SIGINT', () => {
-      console.log('<<<');
-
-      logger.info('SIGINT');
+      logger.fatal('Turlacz kończy pracę');
     });
 
-  client.on('error', function (err) {
-    handleError(err);
-  });
+  client.on('error', handleFinalError('clientError'));
 }
