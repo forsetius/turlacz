@@ -11,7 +11,7 @@
   "author": "Marcin Forseti Paździora",
   "license": "ISC",
   "scripts": {
-    "start": "rimraf dist && ./run.sh",
+    "start": "rimraf dist && tsc screen -OLU ./run.sh",
     "start:dev": "rimraf dist && tsc && ./run.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
